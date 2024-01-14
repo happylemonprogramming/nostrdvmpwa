@@ -4,7 +4,7 @@ import os
 app = Flask(__name__, template_folder='templates')
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', streamlit_url=os.environ.get('streamlit_url'))
 
 @app.route('/manifest.json')
 def serve_manifest():
