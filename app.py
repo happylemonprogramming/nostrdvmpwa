@@ -5,7 +5,7 @@ import os
 app = Flask(__name__, template_folder='templates')
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html',STREAMLIT_URL=os.environ.get('STREAMLIT_URL'))
 
 # @app.route('/streamlit')
 # def streamlit():
