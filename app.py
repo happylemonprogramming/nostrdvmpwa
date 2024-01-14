@@ -23,11 +23,11 @@ def serve_sw():
 # streamlit_process = subprocess.Popen(['streamlit', 'run', 'Home.py'])
 
 if __name__ == '__main__':
-    # Start Streamlit in a separate process
-    streamlit_process = subprocess.Popen(['streamlit', 'run', 'Home.py'])
+    # # Start Streamlit in a separate process
+    # streamlit_process = subprocess.Popen(['streamlit', 'run', 'Home.py'])
 
     # Run Flask app with Gunicorn
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
 
-    # Ensure Streamlit process terminates when Flask app stops
-    streamlit_process.terminate()
+    # # Ensure Streamlit process terminates when Flask app stops
+    # streamlit_process.terminate()
