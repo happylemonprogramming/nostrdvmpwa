@@ -35,6 +35,11 @@
 
       form {
           text-align: center; /* Center form contents */
+          width: 100%;
+          max-width: 400px; /* Set a max width to prevent stretching on larger screens */
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
       }
 
       input[type="text"] {
@@ -54,6 +59,8 @@
           border: none;
           cursor: pointer;
           border-radius: 8px; /* Soften corners */
+          align-self: flex-end; /* Right align the button */
+          margin-top: 8px; /* Add top margin for space between the button and input */
       }
     </style>
   </head>  
