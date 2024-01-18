@@ -1,6 +1,6 @@
 {
-    "name": "My PWA",
-    "short_name": "PWA",
+    "name": "Gibberish",
+    "short_name": "Gibberish",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
