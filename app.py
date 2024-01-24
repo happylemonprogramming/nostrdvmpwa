@@ -22,7 +22,7 @@ def login():
     img = qrcode.make(lightninglink)
     img.save('lnurl.png')
 
-    if session['user_authenticated']:
+    if 'user_authenticated' in session and session['user_authenticated']:
         return 'Hell Yeah'
     else:
         return send_file('lnurl.png', mimetype='image/png')
