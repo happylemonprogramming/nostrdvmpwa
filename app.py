@@ -2,6 +2,7 @@ from flask import Flask, render_template, send_file, request, jsonify, session
 from lightninglogin import generate_auth_url
 from database import *
 import qrcode
+import time
 import os
 
 app = Flask(__name__, template_folder='templates')
@@ -13,28 +14,30 @@ def index():
 
 @app.route('/lightninglogin')
 def login():
-    # Example usage
-    if os.path.exists('lnurl.png'): #TODO: create new user session
+    domain = "nostrdvmpwa-89d0c59f417c.herokuapp.com/walletpath"
+    auth_url, user, lightninglink = generate_auth_url(domain)
+    
+    filepath = os.getcwd() + f'/files/{user}/'
+    if os.path.exists(filepath):
         pass
     else:
-        domain = "nostrdvmpwa-89d0c59f417c.herokuapp.com/walletpath"
-        auth_url, user, lightninglink = generate_auth_url(domain) # user == k1
-        print(f"Generated auth URL: {auth_url}")
-        print(lightninglink)
-        img = qrcode.make(lightninglink)
-        img.save('lnurl.png')
-        log_status = False
-        save_to_dynamodb(user, log_status)
-        
-    try:
-        log_status = get_from_dynamodb(user)['log_status']
-    except:
-        log_status = False
+        os.makedirs(filepath)
 
-    if log_status:
-        return 'Hell Yeah'
+    img = qrcode.make(lightninglink)
+    img.save(f'{filepath}lnurl.png')
+
+    log_status = False
+    save_to_dynamodb(user, log_status)
+
+    while log_status == False:
+        # Continue checking log_status
+        time.sleep(1)
+        log_status = get_from_dynamodb(user)['log_status']
+        print("Log status:",log_status)
+        return send_file(f'{filepath}lnurl.png', mimetype='image/png')
+    
     else:
-        return send_file('lnurl.png', mimetype='image/png')
+        return 'Hell Yeah'
     
 @app.route('/walletpath')
 def wallet():
