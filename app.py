@@ -15,11 +15,11 @@ def index():
 @app.route('/lightninglogin')
 def login():
     # TODO: need to figure out users
-    session_id = 'abc123'
+    session_id = 'xyz456'
     filepath = os.getcwd() + f'/files/{session_id}/'
     if os.path.exists(filepath):
         with open(f'{filepath}user.txt', 'r') as file:
-            user = file.read(f'{filepath}user.txt')
+            user = file.read()
         log_status = get_from_dynamodb(user)['log_status']
         print("Log status:", log_status)
     else:
