@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file, request, jsonify, session
+from flask import Flask, render_template, send_file, request, jsonify, session, sessions
 from lightninglogin import generate_auth_url
 from database import *
 import qrcode
@@ -11,10 +11,11 @@ app.secret_key = 'your_secret_key'
 @app.route('/')
 def index():
     return render_template('index.html', streamlit_url=os.environ.get('streamlit_url'))
-
+ 
 @app.route('/lightninglogin')
 def login():
-    session_id = session.sid 
+    # TODO: need to figure out users
+    session_id = 'abc123'
     filepath = os.getcwd() + f'/files/{session_id}/'
     if os.path.exists(filepath):
         with open(f'{filepath}user.txt', 'r') as file:
