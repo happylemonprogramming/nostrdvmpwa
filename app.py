@@ -26,7 +26,7 @@ def login():
         return send_file('lnurl.png', mimetype='image/png')
     
 @app.route('/walletpath')
-def login():
+def wallet():
     signature = request.args.get('sig')
     
     if signature is not None:
