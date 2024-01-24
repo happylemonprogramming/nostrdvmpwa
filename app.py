@@ -13,7 +13,7 @@ def login():
     signature = request.args.get('sig')
 
     # Example usage
-    domain = "www.jargonspeak.com"
+    domain = "nostrdvmpwa-89d0c59f417c.herokuapp.com/lightninglogin"
     auth_url, k1, lightninglink = generate_auth_url(domain)
     print(f"Generated auth URL: {auth_url}")
     print(lightninglink)
