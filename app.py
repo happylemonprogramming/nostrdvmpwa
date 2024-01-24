@@ -14,26 +14,28 @@ def index():
 
 @app.route('/lightninglogin')
 def login():
-    domain = "nostrdvmpwa-89d0c59f417c.herokuapp.com/walletpath"
-    auth_url, user, lightninglink = generate_auth_url(domain)
-    
-    filepath = os.getcwd() + f'/files/{user}/'
+    session_id = session.sid 
+    filepath = os.getcwd() + f'/files/{session_id}/'
     if os.path.exists(filepath):
-        pass
+        with open(f'{filepath}user.txt', 'r') as file:
+            user = file.read(f'{filepath}user.txt')
+        log_status = get_from_dynamodb(user)['log_status']
+        print("Log status:", log_status)
     else:
+        domain = "nostrdvmpwa-89d0c59f417c.herokuapp.com/walletpath"
+        auth_url, user, lightninglink = generate_auth_url(domain)
         os.makedirs(filepath)
 
-    img = qrcode.make(lightninglink)
-    img.save(f'{filepath}lnurl.png')
+        with open(f'{filepath}user.txt', 'w') as file:
+            file.write(user)
 
-    log_status = False
-    save_to_dynamodb(user, log_status)
+        img = qrcode.make(lightninglink)
+        img.save(f'{filepath}lnurl.png')
 
-    while log_status == False:
-        # Continue checking log_status
-        time.sleep(1)
-        log_status = get_from_dynamodb(user)['log_status']
-        print("Log status:",log_status)
+        log_status = False
+        save_to_dynamodb(user, log_status)
+
+    if log_status == False:
         return send_file(f'{filepath}lnurl.png', mimetype='image/png')
     
     else:
