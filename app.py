@@ -25,8 +25,9 @@ def login():
         img.save('lnurl.png')
         log_status = False
         save_to_dynamodb(user, log_status)
+        
     try:
-        log_status = get_from_dynamodb(user)
+        log_status = get_from_dynamodb(user)['log_status']
     except:
         log_status = False
 
