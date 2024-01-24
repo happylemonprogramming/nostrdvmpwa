@@ -1,10 +1,29 @@
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, request
+from lightninglogin import generate_auth_url
+import qrcode
 import os
 
 app = Flask(__name__, template_folder='templates')
 @app.route('/')
 def index():
     return render_template('index.html', streamlit_url=os.environ.get('streamlit_url'))
+
+@app.route('/lightninglogin')
+def login():
+    signature = request.args.get('sig')
+
+    # Example usage
+    domain = "www.jargonspeak.com"
+    auth_url, k1, lightninglink = generate_auth_url(domain)
+    print(f"Generated auth URL: {auth_url}")
+    print(lightninglink)
+    img = qrcode.make(lightninglink)
+    img.save('lnurl.png')
+
+    if signature is not None:
+        return 'Hell Yeah'
+    else:
+        return send_file('lnurl.png', mimetype='image/png')
 
 @app.route('/manifest.json')
 def serve_manifest():
