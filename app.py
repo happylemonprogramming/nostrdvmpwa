@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file, request
+from flask import Flask, render_template, send_file, request, jsonify
 from lightninglogin import generate_auth_url
 import qrcode
 import os
@@ -13,7 +13,7 @@ def login():
     signature = request.args.get('sig')
 
     # Example usage
-    domain = "nostrdvmpwa-89d0c59f417c.herokuapp.com/lightninglogin"
+    domain = "nostrdvmpwa-89d0c59f417c.herokuapp.com/walletpath"
     auth_url, k1, lightninglink = generate_auth_url(domain)
     print(f"Generated auth URL: {auth_url}")
     print(lightninglink)
@@ -24,6 +24,17 @@ def login():
         return 'Hell Yeah'
     else:
         return send_file('lnurl.png', mimetype='image/png')
+    
+@app.route('/walletpath')
+def login():
+    signature = request.args.get('sig')
+    
+    if signature is not None:
+        response = {"status": "OK"}
+        return jsonify(response)
+    else:
+        response = {"status": "ERROR", "reason": "error details..."}
+        return jsonify(response)
 
 @app.route('/manifest.json')
 def serve_manifest():
