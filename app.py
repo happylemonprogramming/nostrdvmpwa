@@ -1,5 +1,6 @@
 from flask import Flask, render_template, send_file, request, jsonify, session
 from lightninglogin import generate_auth_url
+from database import *
 import qrcode
 import os
 
@@ -12,30 +13,38 @@ def index():
 
 @app.route('/lightninglogin')
 def login():
-    signature = request.args.get('sig')
-
     # Example usage
-    domain = "nostrdvmpwa-89d0c59f417c.herokuapp.com/walletpath"
-    auth_url, k1, lightninglink = generate_auth_url(domain)
-    print(f"Generated auth URL: {auth_url}")
-    print(lightninglink)
-    img = qrcode.make(lightninglink)
-    img.save('lnurl.png')
+    if os.path.exists('lnurl.png'): #TODO: create new user session
+        pass
+    else:
+        domain = "nostrdvmpwa-89d0c59f417c.herokuapp.com/walletpath"
+        auth_url, user, lightninglink = generate_auth_url(domain) # user == k1
+        print(f"Generated auth URL: {auth_url}")
+        print(lightninglink)
+        img = qrcode.make(lightninglink)
+        img.save('lnurl.png')
+        log_status = False
+        save_to_dynamodb(user, log_status)
+    try:
+        log_status = get_from_dynamodb(user)
+    except:
+        log_status = False
 
-    if 'user_authenticated' in session and session['user_authenticated']:
+    if log_status:
         return 'Hell Yeah'
     else:
         return send_file('lnurl.png', mimetype='image/png')
     
 @app.route('/walletpath')
 def wallet():
-    signature = request.args.get('sig')
-    # Print or use the parameters
+    user = request.args.get('k1')
+    sig = request.args.get('sig')
     all_params = request.args.to_dict()
     print("All parameters:", all_params)
-    if signature is not None:
+    if sig is not None:
         response = {"status": "OK"}
-        session['user_authenticated'] = True
+        log_status = True
+        save_to_dynamodb(user, log_status)
         return jsonify(response)
     else:
         response = {"status": "ERROR", "reason": "error details..."}
